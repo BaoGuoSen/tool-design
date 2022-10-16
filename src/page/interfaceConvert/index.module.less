@@ -1,0 +1,60 @@
+.container {
+  margin: 24px;
+  padding-bottom: 24px;
+
+  .btn {
+    float: right;
+    position: sticky;
+    top: 20px;
+    bottom: 20px;
+  }
+
+  .resultContainer {
+    display: flex;
+    justify-content: space-between;
+    // border-top: 1px solid #ccc;
+
+    .resultItem {
+      flex: 1;
+
+      &:not(:last-child) {
+        border-right: 1px dashed #ccc;
+      }
+
+      &:not(:first-child) {
+        margin-left: 12px;
+      }
+    }
+
+    .interContainer {
+      .copyContainer {
+        display: flex;
+        align-items: center;
+
+        h3 {
+          margin: 12px 12px 12px 0;
+        }
+      }
+    }
+
+    .mockContainer {
+      .copyContainer {
+        display: flex;
+        align-items: center;
+
+        h3 {
+          margin: 12px 12px 12px 0;
+        }
+      }
+    }
+  }
+
+  .copyContainer {
+    display: flex;
+    align-items: center;
+
+    h3 {
+      margin: 12px 12px 12px 0;
+    }
+  }
+}

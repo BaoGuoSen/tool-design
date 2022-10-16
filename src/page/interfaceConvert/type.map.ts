@@ -1,0 +1,45 @@
+// 后端 -> 前端 类型映射表初始化
+const BackMapFront = new Map([
+  ['String', 'string'],
+  ['string', 'string'],
+  ['JSON', 'string'],
+  ['json', 'string'],
+  ['Float', 'number'],
+  ['float', 'number'],
+  ['Long', 'number'],
+  ['long', 'number'],
+  ['double', 'number'],
+  ['Double', 'number'],
+  ['Int', 'number'],
+  ['int', 'number'],
+  ['obj', 'Record<string, unknown>'],
+  ['Object', 'Record<string, unknown>'],
+  ['Obj', 'Record<string, unknown>'],
+  ['对象', 'Record<string, unknown>'],
+  ['Integer', 'number'],
+  ['integer', 'number'],
+  ['bigdecimal', 'number'],
+  ['boolean', 'boolean'],
+  ['Boolean', 'boolean'],
+  ['Date', 'string'],
+  ['date', 'string'],
+  // 是否必填映射
+  ['是', 'true'],
+  ['必填', 'true'],
+  ['必须', 'true'],
+  ['true', 'true'],
+  ['y', 'true'],
+  ['Y', 'true'],
+  ['否', 'false'],
+  ['非必填', 'false'],
+  ['false', 'false'],
+  ['n', 'false'],
+  ['N', 'false'],
+  // 添加简写映射
+  ['num', 'number'],
+  ['number', 'number'],
+  ['str', 'string'],
+  ['bool', 'boolean']
+])
+
+export default BackMapFront

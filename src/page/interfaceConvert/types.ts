@@ -19,6 +19,7 @@ interface InterObj {
   isRequire?: string;
   value?: string;
   mockValue?: string | number | boolean;
+  enums?: Array<string>;
 }
 
 export type { Item, FormLabel, InterObj }

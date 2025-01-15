@@ -1,11 +1,11 @@
 import type { User } from './types'
-import type { Params } from 'ahooks/lib/usePagination/types'
+// import type { Params } from 'ahooks/lib/usePagination/types'
 
 import { message } from 'antd'
 
 import request from '../../utils/http'
 
-const getUsers = async (pageParams: Params[0], params: { id: string; }) => {
+const getUsers = async (pageParams: any, params: { id: string; }) => {
   const { data } = await request<{ list: User[], total: number }>('api/user/list', {
     ...params,
     ...pageParams

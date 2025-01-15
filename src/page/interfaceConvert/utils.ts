@@ -40,11 +40,66 @@ const enumerateSwitch = (content?: string, isString?: boolean): string | undefin
     return
   }
 
+  const isEnums = Boolean(content.includes('-'))
+
   if (isString) {
-    return content.split('|').map(item => `'${item}'`).join(' | ')
+    if (content.includes(',')) {
+      return content.split(',').map(item => `'${isEnums ? item.split('-')?.[0] : item}'`).join(' | ')
+    }
+
+    if (content.includes('，')) {
+      return content.split('，').map(item => `'${isEnums ? item.split('-')?.[0] : item}'`).join(' | ')
+    }
+
+    if (content.includes('｜')) {
+      return content.split('｜').map(item => `'${isEnums ? item.split('-')?.[0] : item}'`).join(' | ')
+    }
+
+    return content.split('|').map(item => `'${isEnums ? item.split('-')?.[0] : item}'`).join(' | ')
   }
 
-  return content.split('|').join(' | ')
+  if (content.includes(',')) {
+    return content.split(',').map(item => `${isEnums ? item.split('-')?.[0] : item}`).join(' | ')
+  }
+
+  if (content.includes('，')) {
+    return content.split('，').map(item => `${isEnums ? item.split('-')?.[0] : item}`).join(' | ')
+  }
+
+  if (content.includes('｜')) {
+    return content.split('｜').map(item => `${isEnums ? item.split('-')?.[0] : item}`).join(' | ')
+  }
+
+  return content.split('|').map(item => `${isEnums ? item.split('-')?.[0] : item}`).join(' | ')
+}
+
+/**
+ * 枚举值注释处理
+ * @param content 内容
+ * @returns
+ */
+const enumerateList = (content?: string): Array<string> | undefined => {
+  if (!content) {
+    return
+  }
+
+  if (!content.includes('-')) {
+    return
+  }
+
+  if (content.includes(',')) {
+    return content.split(',')
+  }
+
+  if (content.includes('，')) {
+    return content.split('，')
+  }
+
+  if (content.includes('｜')) {
+    return content.split('｜')
+  }
+
+  return content.split('|')
 }
 
 /**
@@ -138,6 +193,7 @@ ${components.join('\n')}
  * @returns 处理后的静态数据
  */
 const modelDataConvert = (model: string[][]) => {
+  console.log(model, 'ddd')
   const columns = tableColums(model)
   const fields = searchBarFields(model)
   const components = formComponents(model)
@@ -152,4 +208,4 @@ export { colums, searchBarFields, formComponents };
 `
 }
 
-export { wrapper, mockWrapper, enumerateSwitch, mockTypeConvert, modelDataConvert }
+export { wrapper, mockWrapper, enumerateSwitch, enumerateList, mockTypeConvert, modelDataConvert }

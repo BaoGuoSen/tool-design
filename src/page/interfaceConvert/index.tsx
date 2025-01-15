@@ -1,3 +1,5 @@
+import 'animate.css'
+
 import type { InterObj, Item, FormLabel } from './types'
 import type { DraggingStyle, DropResult, NotDraggingStyle } from 'react-beautiful-dnd'
 
@@ -6,15 +8,14 @@ import copy from 'copy-to-clipboard'
 import CodeMirror from '@uiw/react-codemirror'
 import { arrayMoveImmutable } from 'array-move'
 import { CopyOutlined } from '@ant-design/icons'
-// import ReactCanvasNest from 'react-canvas-nest'
 import { javascript } from '@codemirror/lang-javascript'
-import { Form, Input, Button, Radio, message } from 'antd'
+import { Form, Input, Button, Radio, message, Alert } from 'antd'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 
 import BackMapFront from './type.map'
 import styles from './index.module.less'
 import classMerge from '../../utils/mergeClassName'
-import { enumerateSwitch, mockTypeConvert, mockWrapper, modelDataConvert, wrapper } from './utils'
+import { enumerateSwitch, mockTypeConvert, mockWrapper, enumerateList, wrapper } from './utils'
 
 const { TextArea } = Input
 
@@ -35,16 +36,18 @@ const Index = () => {
   const onFinish = (values: FormLabel) => {
     if (!values.reqParams) {
       message.warn('请输入接口文档数据')
+
+      return
     }
 
     const { interName, isExport, reqParams, reqIsString } = values
 
     const mockTemplatePc = mockConvert(reqParams, 'pc')
     const mockTemplateMini = mockConvert(reqParams, 'mini')
-    const staticModel = modelConvert(reqParams)
+    // const staticModel = modelConvert(reqParams)
     const reqTemplate = paramsConvert(reqParams, reqIsString)
 
-    setStaticModel(modelDataConvert(staticModel))
+    // setStaticModel(modelDataConvert(staticModel))
     setMockTemplatePc(mockWrapper(mockTemplatePc, 'pc'))
     setMockTemplateMini(mockWrapper(mockTemplateMini, 'mini'))
     setReqTemplate(wrapper(reqTemplate, interName || 'REQ', isExport))
@@ -77,13 +80,15 @@ const Index = () => {
 
       // 枚举类型处理
       const value = enumerateSwitch(itemArr[valueIndex], isString)
+      const enums = enumerateList(itemArr[valueIndex])
 
       const obj: InterObj = {
         name,
         type,
         desc,
         isRequire,
-        value
+        value,
+        enums
       }
 
       pre.push(obj)
@@ -93,6 +98,15 @@ const Index = () => {
     const template = ReqInter?.map(item => {
       if (!item.desc) {
         return `  ${item.name}${item.isRequire === 'true' ? '' : '?'}: ${item.value ? item.value : item.type};`
+      }
+
+      // 枚举的详细注释
+      if (item.enums) {
+        return `  /**
+   * ${item.desc}
+   * - ${item.enums.join('\n   * - ')}
+   */
+  ${item.name}${item.isRequire === 'true' ? '' : '?'}: ${item.value ? item.value : item.type};`
       }
 
       return `  /**
@@ -204,15 +218,14 @@ const Index = () => {
 
   return (
     <div className={styles.container}>
-      {/* <ReactCanvasNest
-        config={{ pointColor: ' 255, 255, 255 ', pointOpacity: 0.3 }}
-        style={{ opacity: 0.3 }}
-      /> */}
+      {/* <h3 className="animate__animated animate__bounce">道阻且长、我辈仍需努力</h3> */}
+      {/* <h1 className="animate__animated animate__heartBeat animate__infinite">Prod by theSen</h1> */}
+      <h1 className="animate__animated animate__bounce animate__repeat-3 animate__delay-3s">Prod by theSen</h1>
 
-      <h1>接口转化器</h1>
       <Form
-        labelCol={{ span: 2 }}
-        wrapperCol={{ span: 20 }}
+        labelCol={{ span: 3 }}
+        labelAlign="left"
+        wrapperCol={{ span: 21 }}
         initialValues={{
           remember: true,
           isExport: false,
@@ -222,12 +235,7 @@ const Index = () => {
         onFinish={onFinish}
         autoComplete="on"
       >
-        <Button className={styles.btn} type="primary" htmlType="submit">
-          生成接口代码
-        </Button>
-
         <Form.Item
-          wrapperCol={{ span: 8 }}
           label="接口名称"
           name="interName"
         >
@@ -235,7 +243,6 @@ const Index = () => {
         </Form.Item>
 
         <Form.Item
-          wrapperCol={{ span: 8 }}
           label="是否导出"
           name="isExport"
         >
@@ -246,7 +253,6 @@ const Index = () => {
         </Form.Item>
 
         <Form.Item
-          wrapperCol={{ span: 8 }}
           label="入参字段顺序"
           name="paramsSort"
         >
@@ -283,7 +289,6 @@ const Index = () => {
         </Form.Item>
 
         <Form.Item
-          wrapperCol={{ span: 8 }}
           label="枚举是否字符串"
           name="reqIsString"
         >
@@ -294,12 +299,21 @@ const Index = () => {
         </Form.Item>
 
         <Form.Item
-          wrapperCol={{ span: 14 }}
+          label={'tips'}
+        >
+          <Alert type="info" message="枚举支持半角全角“，”和半角全角“｜”隔离，不能包含空格。枚举的详细注释在枚举指后加-进行说明 比如：ENABLE-启用，DIAABLE-禁用" />
+        </Form.Item>
+
+        <Form.Item
           label="接口文档"
           name="reqParams"
         >
           <TextArea rows={10} />
         </Form.Item>
+
+        <Button className={styles.btn} type="primary" htmlType="submit">
+          生成接口代码
+        </Button>
       </Form>
 
       <div className={styles.resultContainer}>
@@ -352,7 +366,7 @@ const Index = () => {
           </div>
         }
       </div>
-      <div>
+      {/* <div>
         {
           staticModel &&
           <div>
@@ -369,7 +383,7 @@ const Index = () => {
             />
           </div>
         }
-      </div>
+      </div> */}
     </div>
   )
 }
